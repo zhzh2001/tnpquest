@@ -28,8 +28,7 @@
             "includePath": [
                 "/usr/include",
                 "/usr/local/include",
-                "/usr/include/linux",
-                "/usr/include/c++/8.1.1/tr1"
+                "/usr/include/linux"
             ],
             "defines": [],
             "intelliSenseMode": "clang-x64",

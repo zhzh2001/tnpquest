@@ -204,7 +204,7 @@ void placeStuff(const std::vector<stuff> &stuffs, cell_t type);
 void placeStar();
 void doSPJ();
 void clearBoard();
-int dice(int initl, int initr, int l, int r);
+int dice(int l, int r);
 void drawBoard();
 void generateStep();
 void process(const std::string &cmd);
@@ -220,7 +220,7 @@ void drink();
 void check();
 void explore();
 void rest();
-bool findOpponent(const std::string& s);
+bool findOpponent(const std::string &s);
 void processStuff();
 void enemyTurn();
 
