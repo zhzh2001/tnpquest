@@ -1,0 +1,15 @@
+buttons
+	496 DONE
+	499 BATTLE
+	507 CHECK SCENT
+	509 HUNT
+	511 EXPLORE
+	513 REST
+	515 DRINK
+	572 DEFEND
+	574 FLEE
+sprites
+	482 walk
+	528 defend & attack & benefit & hunt & drink
+	539 enemy defend & attack
+	644 injury
