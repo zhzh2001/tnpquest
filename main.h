@@ -8,7 +8,7 @@
 #include <cstdlib>
 #include <algorithm>
 
-const std::string version = "v0.1";
+const std::string version = "v0.2 alpha";
 std::minstd_rand gen(time(NULL)); //global random engine
 
 /***
@@ -45,9 +45,14 @@ int opponentCol;
 int enemyAttack;
 int enemyHealth;
 int starFound;
+bool inv = false;
+bool waterp = true;
+bool diagonal = false;
+int catName;
 
 /***
  * presets
+ * some are changable
  ***/
 std::uniform_int_distribution<> catVal(8, 12); //initial catHealth, catHunger & catThirst range
 const int boardRows = 5;
@@ -62,10 +67,11 @@ const int benefitCount = 15;
 const int defenseActionCount = 20;
 const int enemyCount = 23;
 const int starCount = 4;
-const int healthMax = 5; //go healthMax steps to decrease catHealth by 1
-const int hungerMax = 5; //same as healthMax
-const int thirstMax = 5;
-const int catValMax = 16;
+int healthMax = 5; //go healthMax steps to decrease catHealth by 1
+int hungerMax = 5; //same as healthMax
+int thirstMax = 5;
+int catValMax = 16;
+const int names = 26;
 
 /***
  * data structures
@@ -223,5 +229,6 @@ void rest();
 bool findOpponent(const std::string &s, bool bound);
 void processStuff();
 void enemyTurn();
+void processParams(int argc, char *argv[]);
 
 #endif

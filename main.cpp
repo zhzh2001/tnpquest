@@ -5,8 +5,9 @@ int main(int argc, char *argv[])
 {
 	printver();
 	pregame();
+	processParams(argc, argv);
 	generateBoard();
-	nowCol = std::uniform_int_distribution<>(0, boardCols - 1)(gen);
+	nowCol = dice(0, boardCols - 1);
 	generateStep();
 	for (;;)
 	{
@@ -32,7 +33,7 @@ int main(int argc, char *argv[])
 **/
 void printver()
 {
-	std::cout << "Warrior Cats The New Prophecy Quest Game Mimicked CLI Version " << version << std::endl;
+	std::cout << "Warriors The New Prophecy Quest Game Mimicked CLI Version " << version << std::endl;
 }
 
 /**
@@ -51,7 +52,11 @@ void pregame()
 	catSkill = catVal(gen);
 	do
 	{
-		std::cout << "Choose your Clan(t/w/r/s):" << std::flush;
+		std::cout << "ThunderClan: +2 Strength\n";
+		std::cout << "WindClan: +2 Speed\n";
+		std::cout << "RiverClan: No water movement penalty(aka. -1 Health per step)\n";
+		std::cout << "ShadowClan: Can attack and move diagonally\n";
+		std::cout << "Choose your Clan(t/w/r/s): " << std::flush;
 		char c;
 		std::cin >> c;
 		switch (c)
@@ -66,16 +71,25 @@ void pregame()
 			break;
 		case 'r':
 			catClan = river;
+			waterp = false;
 			break;
 		case 's':
 			catClan = shadow;
+			diagonal = true;
 			break;
 		default:
 			catClan = undefined;
 			std::cout << "Unrecognizable Clan" << std::endl;
 		}
 	} while (catClan == undefined);
+	std::cout << "Before you start your quest, you need to receive you apprentice name.\n";
+	std::cout << "Your first name: " << std::flush;
+	std::string s;
+	std::cin >> s;
+	catName = std::tolower(s[0]) - 'a';
+	std::cout << "Your name is " << prefixes[catName] << "paw, press Enter to continue";
 	std::string tmp;
+	getline(std::cin, tmp);
 	getline(std::cin, tmp);
 }
 
@@ -314,6 +328,7 @@ void process(const std::string &cmd)
 				if (--nowBoard == -1)
 				{
 					msg += "No way! You can move up to " + std::to_string(remainStep) + " steps\n";
+					nowBoard++;
 					return;
 				}
 				opponentRow = boardRows - 1;
@@ -326,7 +341,7 @@ void process(const std::string &cmd)
 					msg += "You found Moonpool! ";
 					if (starFound >= starCount)
 					{
-						std::cerr << msg << "You win with " + std::to_string(starFound) + " vital items found!\n";
+						std::cerr << msg << "You win with " << std::to_string(starFound) << " vital items found and earn your warrior name: " << prefixes[catName] << suffixes[catName] << std::endl;
 						exit(0);
 					}
 					msg += "But you only found " + std::to_string(starFound) + " vital items out of " + std::to_string(starCount) + ".\n";
@@ -339,7 +354,7 @@ void process(const std::string &cmd)
 		else if (cmd == "help" || cmd == "?")
 		{
 			msg += "Commands: up, down, left, right, stop";
-			if (catClan == shadow)
+			if (diagonal)
 				msg += ", ul(upleft), ur(upright), dl(downleft), dr(downright)\n";
 			else
 				msg += '\n';
@@ -371,7 +386,18 @@ void process(const std::string &cmd)
 	}
 	else
 	{
-		if (cmd[0] == 'b' || cmd.substr(0, 6) == "battle")
+		if (cmd == "help" || cmd == "?")
+		{
+			msg += "Commands: battle, hunt, drink, check, explore, rest\n";
+			msg += "Battle: Specify a cell to battle\n";
+			msg += "Hunt: Hunt prey on a cell, walk directly into it will scare prey away\n";
+			msg += "Drink: Drink water on current cell\n";
+			msg += "Check: Show most of occupied cells\n";
+			msg += "Explore: Try to figure out what occupies a nearby cell\n";
+			msg += "Rest: Likely to gain some Health\n";
+			return;
+		}
+		else if (cmd[0] == 'b' || cmd.substr(0, 6) == "battle")
 		{
 			std::size_t pos = cmd.find(' ');
 			if (pos == std::string::npos)
@@ -444,11 +470,6 @@ void process(const std::string &cmd)
 		}
 		else if (cmd == "r" || cmd == "rest")
 			rest();
-		else if (cmd == "help" || cmd == "?")
-		{
-			msg += "Commands: battle, hunt, drink, check, explore, rest\n";
-			return;
-		}
 		else
 		{
 			msg += "Invalid command: unknown command or command that cannot be executed stopped, see help\n";
@@ -475,6 +496,8 @@ std::vector<stuff> to_stuffs(const std::vector<T> &stuffs)
 **/
 void checkState()
 {
+	if (inv)
+		return;
 	if (catHealth <= 0 || catHunger <= 0 || catThirst <= 0)
 	{
 		std::cout << "< " << msg;
@@ -571,7 +594,7 @@ void walk()
 	nowRow = opponentRow;
 	nowCol = opponentCol;
 	cell &now = boards[nowBoard].matrix[nowRow][nowCol];
-	if (now.terrainID > 14 && now.terrainID < 19 && catClan != river)
+	if (now.terrainID > 14 && now.terrainID < 19 && waterp)
 	{
 		catHealth--;
 		checkState();
@@ -621,7 +644,7 @@ bool findOpponent(const std::string &s, bool bound)
 		opponentCol--;
 	else if (s == "r" || s == "right")
 		opponentCol++;
-	else if (catClan != shadow && (s == "ul" || s == "upleft" || s == "ur" || s == "upright" || s == "dl" || s == "downleft" || s == "dr" || s == "downright"))
+	else if (!diagonal && (s == "ul" || s == "upleft" || s == "ur" || s == "upright" || s == "dl" || s == "downleft" || s == "dr" || s == "downright"))
 	{
 		msg += "Invalid direction: only ShadowClan can walk diagonally\n";
 		return false;
@@ -780,4 +803,55 @@ void enemyTurn()
 	enemy ene = enemies[boards[nowBoard].matrix[opponentRow][opponentCol].stuffID];
 	enemyAttack = dice(0, ene.strength);
 	msg += ene.name + " (" + std::to_string(enemyHealth) + ") attacks you, attack: " + std::to_string(enemyAttack) + '\n';
+}
+
+void processParams(int argc, char *argv[])
+{
+	for (int i = 1; i < argc; i++)
+	{
+		std::string s(argv[i]);
+		if (s == "-i" || s == "--invincible")
+			inv = true;
+		else if (s == "--health")
+		{
+			catHealth = std::atoi(argv[++i]);
+			catValMax = std::max(catValMax, catHealth);
+		}
+		else if (s == "--hunger")
+		{
+			catHunger = std::atoi(argv[++i]);
+			catValMax = std::max(catValMax, catHealth);
+		}
+		else if (s == "--thirst")
+		{
+			catThirst = std::atoi(argv[++i]);
+			catValMax = std::max(catValMax, catThirst);
+		}
+		else if (s == "--stepmax")
+			healthMax = hungerMax = thirstMax = std::atoi(argv[++i]);
+		else if (s == "--strength")
+			catStrength = std::atoi(argv[++i]);
+		else if (s == "--speed")
+			catSpeed = std::atoi(argv[++i]);
+		else if (s == "--skill")
+			catSkill = std::atoi(argv[++i]);
+		else if (s == "--defense")
+			catDefense = std::atoi(argv[++i]);
+		else if (s == "--no-water-penalty")
+			waterp = false;
+		else if (s == "--diagonal")
+			diagonal = true;
+		else if (s == "--cat-val-max")
+			catValMax = std::atoi(argv[++i]);
+		else if (s == "-h" || s == "--help" || s == "-?")
+		{
+			std::cout << "--invincible, -i: You won't die\n";
+			std::cout << "--health, --hunger, --thirst: Modify values, will raise catValMax if >= 16\n";
+			std::cout << "--strength, --speed, --skill, --defense: Modify values\n";
+			std::cout << "--stepmax: Specify how many steps you can walk before decrease status values\n";
+			std::cout << "--no-water-penelty: You won't lose health in water even if you are not RiverClan\n";
+			std::cout << "--diagonal: You can move diagonally even if you are not ShadowClan\n";
+			std::cout << "--cat-val-max: Modify catValMax\n";
+		}
+	}
 }
