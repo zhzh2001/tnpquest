@@ -220,7 +220,7 @@ void drink();
 void check();
 void explore();
 void rest();
-bool findOpponent(const std::string &s);
+bool findOpponent(const std::string &s, bool bound);
 void processStuff();
 void enemyTurn();
 

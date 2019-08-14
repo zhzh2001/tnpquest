@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
 		clearScreen();
 		drawBoard();
 		std::cout << "Health: " << catHealth << " Hunger: " << catHunger << " Thirst: " << catThirst << " Strength: " << catStrength << " + " << strengthBonus << " Defense: " << catDefense << " Speed: " << catSpeed << " + " << speedBonus << std::endl;
-		std::cout << "Skill: " << catSkill << " Stars: " << starFound << " / " << starCount << " Status: " << (remainStep ? "Walking" : battling ? "Battling" : "Stopped") << std::endl;
-		std::cout << "< " << msg << std::endl;
+		std::cout << "Skill: " << catSkill << " Stars: " << starFound << " / " << starCount << " Status: " << (remainStep ? "Walking" : battling ? "Battling" : "Stopped") << " Clan: " << (catClan == thunder ? "ThunderClan" : catClan == shadow ? "ShadowClan" : catClan == wind ? "WindClan" : "RiverClan") << " Map: " << std::to_string(nowBoard + 1) << " / " << std::to_string(boardCount) << std::endl;
+		std::cout << "< " << msg;
 		std::string cmd;
 		std::cout << "> " << std::flush;
 		std::string tmp;
@@ -188,7 +188,7 @@ void clearBoard()
 {
 	for (int x = 0; x < boardRows; x++)
 		for (int y = 0; y < boardCols; y++)
-			boards[nowBoard].matrix[nowRow][nowCol].visibility = visibility_t::none;
+			boards[nowBoard].matrix[x][y].visibility = visibility_t::none;
 }
 
 /**
@@ -234,9 +234,9 @@ void drawBoard()
 		{
 			std::string name = "";
 			cell now = boards[nowBoard].matrix[x][y];
-			if (now.visibility == exists)
+			if (now.visibility == visibility_t::exists)
 				name = "Unknown";
-			else if (now.visibility == visible)
+			else if (now.visibility == visibility_t::visible)
 			{
 				name = stuffArray[now.type][now.stuffID].name;
 				if (now.starID)
@@ -256,7 +256,7 @@ void drawBoard()
 void generateStep()
 {
 	remainStep = dice(1, catSpeed) + speedBonus;
-	msg += "You can move up to " + std::to_string(remainStep) + " steps";
+	msg += "You can move up to " + std::to_string(remainStep) + " steps\n";
 }
 
 /**
@@ -291,73 +291,97 @@ void process(const std::string &cmd)
 	if (remainStep)
 	{
 		//walking state
-		if (cmd == "s")
+		if (cmd == "s" || cmd == "stop")
 		{
-			msg = "Stopped";
+			msg += "Stopped\n";
 			remainStep = 0;
 			loseVal();
 		}
-		else if (cmd == "u" || cmd == "d" || cmd == "l" || cmd == "r" || cmd == "ul" || cmd == "ur" || cmd == "dl" || cmd == "dr")
+		else if (cmd == "u" || cmd == "up" || cmd == "d" || cmd == "down" || cmd == "l" || cmd == "left" || cmd == "r" || cmd == "right" || cmd == "ul" || cmd == "upleft" || cmd == "ur" || cmd == "upright" || cmd == "dl" || cmd == "downleft" || cmd == "dr" || cmd == "downright")
 		{
-			findOpponent(cmd);
-			if (opponentCol < 0 || opponentCol == boardCols)
+			if (!findOpponent(cmd, true))
+			{
+				msg += "You can move up to " + std::to_string(remainStep) + " steps\n";
 				return;
+			}
+			if (opponentCol < 0 || opponentCol == boardCols)
+			{
+				msg += "No way! You can move up to " + std::to_string(remainStep) + " steps\n";
+				return;
+			}
 			if (opponentRow == -1)
 			{
-				if (!nowBoard)
+				if (--nowBoard == -1)
+				{
+					msg += "No way! You can move up to " + std::to_string(remainStep) + " steps\n";
 					return;
-				nowBoard--;
+				}
 				opponentRow = boardRows - 1;
 				clearBoard();
 			}
 			if (opponentRow == boardRows)
 			{
-				if (nowBoard == boardCount)
-					return;
-				nowBoard++;
+				if (++nowBoard == boardCount - 1)
+				{
+					msg += "You found Moonpool! ";
+					if (starFound >= starCount)
+					{
+						std::cerr << msg << "You win with " + std::to_string(starFound) + " vital items found!\n";
+						exit(0);
+					}
+					msg += "But you only found " + std::to_string(starFound) + " vital items out of " + std::to_string(starCount) + ".\n";
+				}
 				opponentRow = 0;
 				clearBoard();
 			}
 			walk();
-			if (remainStep)
-				msg = "You can move up to " + std::to_string(remainStep) + " steps";
 		}
-		else if (cmd == "help")
+		else if (cmd == "help" || cmd == "?")
 		{
-			msg = "Commands: u(up), d(down), l(left), r(right), s(stop)";
+			msg += "Commands: up, down, left, right, stop";
 			if (catClan == shadow)
-				msg += ", ul(upleft), ur(upright), dl(downleft), dr(downright)";
+				msg += ", ul(upleft), ur(upright), dl(downleft), dr(downright)\n";
+			else
+				msg += '\n';
 			return;
 		}
 		else
 		{
-			msg = "Invalid command: unknown command or command that cannot be executed walking";
+			msg += "Invalid command: unknown command or command that cannot be executed walking, see help\n";
 			return;
 		}
 	}
 	else if (battling)
 	{
 		enemy ene = enemies[boards[nowBoard].matrix[opponentRow][opponentCol].stuffID];
-		if (cmd == "defend")
+		if (cmd == "d" || cmd == "defend")
 			battle();
-		else if (cmd == "f")
+		else if (cmd == "f" || cmd == "flee")
 			flee();
-		else if (cmd == "help")
+		else if (cmd == "help" || cmd == "?")
 		{
-			msg = "Commands: defend, f(flee)\n" + ene.name + "(" + std::to_string(enemyHealth) + ") attacks you, attack:" + std::to_string(enemyAttack);
+			msg += "Commands: defend, flee\n" + ene.name + "(" + std::to_string(enemyHealth) + ") attacks you, attack:" + std::to_string(enemyAttack) + '\n';
 			return;
 		}
 		else
 		{
-			msg = "Invalid command: unknown command or command that cannot be executed battling\n" + ene.name + "(" + std::to_string(enemyHealth) + ") attacks you, attack:" + std::to_string(enemyAttack);
+			msg += "Invalid command: unknown command or command that cannot be executed battling, see help\n" + ene.name + "(" + std::to_string(enemyHealth) + ") attacks you, attack:" + std::to_string(enemyAttack) + '\n';
 			return;
 		}
 	}
 	else
 	{
-		if (cmd[0] == 'b')
+		if (cmd[0] == 'b' || cmd.substr(0, 6) == "battle")
 		{
-			if (findOpponent(cmd.substr(2)) && boards[nowBoard].matrix[opponentRow][opponentCol].type == cell_t::Enemy)
+			std::size_t pos = cmd.find(' ');
+			if (pos == std::string::npos)
+			{
+				msg += "You have to specify an opponent!\n";
+				return;
+			}
+			if (!findOpponent(cmd.substr(pos + 1), false))
+				return;
+			if (boards[nowBoard].matrix[opponentRow][opponentCol].type == cell_t::Enemy)
 			{
 				battling = true;
 				std::pair<int, int> range = enemies[boards[nowBoard].matrix[opponentRow][opponentCol].stuffID].health;
@@ -366,52 +390,68 @@ void process(const std::string &cmd)
 			}
 			else
 			{
-				msg = "Nothing to battle";
-				return;
+				msg += "Nothing to battle\n";
+				generateStep();
 			}
 		}
-		else if (cmd.substr(0, 2) == "h ")
+		else if (cmd[0] == 'h' || cmd.substr(0, 4) == "hunt")
 		{
-			if (findOpponent(cmd.substr(2)) && boards[nowBoard].matrix[opponentRow][opponentCol].type == cell_t::Prey)
+			std::size_t pos = cmd.find(' ');
+			if (pos == std::string::npos)
+			{
+				msg += "You have to specify an opponent!\n";
+				return;
+			}
+			if (!findOpponent(cmd.substr(pos + 1), false))
+				return;
+			if (boards[nowBoard].matrix[opponentRow][opponentCol].type == cell_t::Prey)
 				hunt();
 			else
 			{
-				msg = "Nothing to hunt";
-				return;
+				msg += "Nothing to hunt\n";
+				generateStep();
 			}
 		}
-		else if (cmd == "drink")
+		else if (cmd == "d" || cmd == "drink")
 		{
 			if ((boards[nowBoard].matrix[nowRow][nowCol].terrainID >= 15 && boards[nowBoard].matrix[nowRow][nowCol].terrainID <= 18) || boards[nowBoard].matrix[nowRow][nowCol].terrainID == 28)
 				drink();
 			else
 			{
-				msg = "No water here";
-				return;
+				msg += "No water here\n";
+				generateStep();
 			}
 		}
-		else if (cmd[0] == 'c')
+		else if (cmd == "c" || cmd == "check")
 			check();
-		else if (cmd[0] == 'e')
+		else if (cmd[0] == 'e' || cmd.substr(0, 7) == "explore")
 		{
-			if (findOpponent(cmd.substr(2)) && boards[nowBoard].matrix[opponentRow][opponentCol].type != cell_t::None)
+			std::size_t pos = cmd.find(' ');
+			if (pos == std::string::npos)
+			{
+				msg += "You have to specify an opponent!\n";
+				return;
+			}
+			if (!findOpponent(cmd.substr(pos + 1), false))
+				return;
+			if (boards[nowBoard].matrix[opponentRow][opponentCol].type != cell_t::None)
 				explore();
 			else
 			{
-				msg = "Nothing here";
-				return;
+				msg += "Nothing here\n";
+				generateStep();
 			}
 		}
-		else if (cmd == "r")
+		else if (cmd == "r" || cmd == "rest")
 			rest();
-		else if (cmd == "help")
+		else if (cmd == "help" || cmd == "?")
 		{
-			msg = "Commands: b(battle), h(hunt), drink, c(check), e(explore), r(rest)";
+			msg += "Commands: battle, hunt, drink, check, explore, rest\n";
 			return;
 		}
 		else
 		{
-			msg = "Invalid command: unknown command or command that cannot be executed stopped";
+			msg += "Invalid command: unknown command or command that cannot be executed stopped, see help\n";
 			return;
 		}
 	}
@@ -437,7 +477,7 @@ void checkState()
 {
 	if (catHealth <= 0 || catHunger <= 0 || catThirst <= 0)
 	{
-		std::cout << "< " << msg << std::endl;
+		std::cout << "< " << msg;
 		std::cerr << "You died! Meooooow!\n";
 		exit(0);
 	}
@@ -481,15 +521,16 @@ void battle()
 	def = dice(0, ene.defense);
 	int enemyLost = std::max(atk - def, 0);
 	enemyHealth -= enemyLost;
+	msg += "You lost " + std::to_string(catLost) + " health, enemy lost " + std::to_string(enemyLost) + " health\n";
 	if (enemyHealth <= 0)
 	{
 		if (now.starID)
 		{
-			msg = "You found " + stars[now.starID].name;
+			msg += "You found " + stars[now.starID].name;
 			++starFound;
 		}
 		else
-			msg = "You defeated " + ene.name;
+			msg += "You defeated " + ene.name;
 		msg += ", great work\n";
 		now.type = cell_t::None;
 		now.visibility = visibility_t::none;
@@ -497,10 +538,7 @@ void battle()
 		generateStep();
 	}
 	else
-	{
-		msg = "You lost " + std::to_string(catLost) + " health, enemy lost " + std::to_string(enemyLost) + " health\n";
 		enemyTurn();
-	}
 }
 
 /**
@@ -516,7 +554,7 @@ void flee()
 	battling = false;
 	nowRow = 0;
 	nowCol = dice(0, boardCols - 1);
-	msg = "Running away will cost you 1 point each Health, Hunger, Thirst\n";
+	msg += "Running away will cost you 1 point each Health, Hunger, Thirst\n";
 	generateStep();
 }
 
@@ -528,11 +566,16 @@ void walk()
 	if (!--remainStep)
 	{
 		loseVal();
-		msg = "Stopped";
+		msg += "Stopped\n";
 	}
 	nowRow = opponentRow;
 	nowCol = opponentCol;
 	cell &now = boards[nowBoard].matrix[nowRow][nowCol];
+	if (now.terrainID > 14 && now.terrainID < 19 && catClan != river)
+	{
+		catHealth--;
+		checkState();
+	}
 	if (now.type != cell_t::None)
 	{
 		now.visibility = visibility_t::visible;
@@ -540,9 +583,10 @@ void walk()
 		loseVal();
 		if (now.type == cell_t::Prey)
 		{
-			msg = "You scared away some prey";
+			msg += "You scared away some prey\n";
 			now.type = cell_t::None;
 			now.visibility = visibility_t::none;
+			generateStep();
 		}
 		else if (now.type == cell_t::Enemy)
 		{
@@ -553,39 +597,52 @@ void walk()
 			battle();
 		}
 		else
+		{
 			processStuff();
+			generateStep();
+		}
 	}
+	else if (remainStep)
+		msg += "You can move up to " + std::to_string(remainStep) + " steps\n";
 }
 
 /**
  * set opponent by s
 **/
-bool findOpponent(const std::string &s)
+bool findOpponent(const std::string &s, bool bound)
 {
 	opponentRow = nowRow;
 	opponentCol = nowCol;
-	if (s == "u")
+	if (s == "u" || s == "up")
 		opponentRow++;
-	else if (s == "d")
+	else if (s == "d" || s == "down")
 		opponentRow--;
-	else if (s == "l")
+	else if (s == "l" || s == "left")
 		opponentCol--;
-	else if (s == "r")
+	else if (s == "r" || s == "right")
 		opponentCol++;
-	if (catClan != shadow && (s == "ul" || s == "ur" || s == "dl" || s == "dr"))
+	else if (catClan != shadow && (s == "ul" || s == "upleft" || s == "ur" || s == "upright" || s == "dl" || s == "downleft" || s == "dr" || s == "downright"))
 	{
-		msg = "Invalid command: only ShadowClan can walk diagonally";
+		msg += "Invalid direction: only ShadowClan can walk diagonally\n";
 		return false;
 	}
-	if (s == "ul")
+	else if (s == "ul" || s == "upleft")
 		opponentRow++, opponentCol--;
-	else if (s == "ur")
+	else if (s == "ur" || s == "upright")
 		opponentRow++, opponentCol++;
-	else if (s == "dl")
+	else if (s == "dl" || s == "downleft")
 		opponentRow--, opponentCol--;
-	else if (s == "dr")
+	else if (s == "dr" || s == "downright")
 		opponentRow--, opponentCol++;
-	return opponentRow >= 0 && opponentRow < boardRows && opponentCol >= 0 && opponentCol < boardCols;
+	else
+	{
+		msg += "Invalid direction: unknown direction, see help\n";
+		return false;
+	}
+	if (bound || (opponentRow >= 0 && opponentRow < boardRows && opponentCol >= 0 && opponentCol < boardCols))
+		return true;
+	msg += "Invalid direction: out of map!\n";
+	return false;
 }
 
 void hunt()
@@ -593,15 +650,16 @@ void hunt()
 	cell &opponent = boards[nowBoard].matrix[opponentRow][opponentCol];
 	int result = dice(1, catSkill);
 	prey opr = preys[opponent.stuffID];
+	msg += "You rolled " + std::to_string(result) + " and requires >= " + std::to_string(opr.skill) + ".\n";
 	if (result >= opr.skill)
 	{
-		msg = "You caught " + opr.name + " and received " + opr.hunger + " hunger points!\n";
+		msg += "You caught " + opr.name + " and received " + std::to_string(opr.hunger) + " hunger points! ";
 		catHunger += opr.hunger;
 		if (catHunger > catValMax)
 			catHunger = catValMax;
 	}
 	else
-		msg = "You lost " + opr.name + "!\n";
+		msg += "You lost " + opr.name + "! ";
 	opponent.type = cell_t::None;
 	opponent.visibility = visibility_t::none;
 	nowRow = opponentRow;
@@ -611,8 +669,8 @@ void hunt()
 
 void drink()
 {
-	int result = dice(1, 3);
-	msg = "Good water, you gained " + result + " thirst points!\n";
+	int result = dice(1, 2);
+	msg += "Good water, you gained " + std::to_string(result) + " thirst points!\n";
 	catThirst += result;
 	if (catThirst > catValMax)
 		catThirst = catValMax;
@@ -649,15 +707,15 @@ void rest()
 	if (result == 1)
 	{
 		catHealth += 2;
-		msg = "You received 2 health points!\n";
+		msg += "You received 2 health points!\n";
 	}
 	else if (result == 2 || result == 3)
 	{
 		catHealth++;
-		msg = "You received 1 health points!\n";
+		msg += "You received 1 health points!\n";
 	}
 	else
-		msg = "You did not receive any health points, maybe next time.\n";
+		msg += "You did not receive any health points, maybe next time.\n";
 	if (catHealth > catValMax)
 		catHealth = catValMax;
 	generateStep();
@@ -669,34 +727,38 @@ void processStuff()
 	if (opponent.type == cell_t::Benefit)
 	{
 		benefit opb = benefits[opponent.stuffID];
-		int result = dice(1, opb.dice);
+		int result = dice(0, 6) + opb.dice;
+		msg += "You rolled " + std::to_string(result) + " and requires > " + std::to_string(opb.requires) + ".\n";
 		if (result > opb.requires)
 		{
-			msg = "You found " + opb.name + " and received " + opb.effect;
+			msg += "You found " + opb.name + " and received " + std::to_string(opb.effect);
 			if (opb.applyto == catVal_t::health)
 			{
-				msg += " health points!\n";
+				msg += " health points! ";
 				catHealth += opb.effect;
 			}
 			else if (opb.applyto == catVal_t::hunger)
 			{
-				msg += " hunger points!\n";
+				msg += " hunger points! ";
 				catHunger += opb.effect;
 			}
 			else
 			{
-				msg += " thirst points!\n";
+				msg += " thirst points! ";
 				catThirst += opb.effect;
 			}
 		}
 		else
-			msg = "You lost " + opb.name + " !\n";
+			msg += "You lost " + opb.name + "! ";
 	}
 	else if (opponent.type == cell_t::DefenseAction)
 	{
 		defenseAction opd = defenseActions[opponent.stuffID];
-		int result = std::max(dice(opd.damage.first, opd.damage.second) - dice(1, opd.apply == catVal_t::skill ? catSkill : catSpeed), 0);
-		msg += "You encountered " + opd.name + " and lost " + result + " health points!\n";
+		int damage = dice(opd.damage.first, opd.damage.second);
+		int result = dice(1, opd.apply == catVal_t::skill ? catSkill : catSpeed);
+		msg += "You rolled " + std::to_string(result) + " and max damage is " + std::to_string(damage) + ".\n";
+		result = std::max(damage - result, 0);
+		msg += "You encountered " + opd.name + " and lost " + std::to_string(result) + " health points! ";
 		catHealth -= result;
 		checkState();
 	}
@@ -704,7 +766,8 @@ void processStuff()
 	{
 		injury opi = injuries[opponent.stuffID];
 		int result = dice(0, opi.damage);
-		msg += "You encountered " + opi.name + " and lost " + result + " health points!\n";
+		msg += "You rolled " + std::to_string(result) + " and max damage is " + std::to_string(opi.damage) + ".\n";
+		msg += "You encountered " + opi.name + " and lost " + std::to_string(result) + " health points! ";
 		catHealth -= result;
 		checkState();
 	}
@@ -716,5 +779,5 @@ void enemyTurn()
 {
 	enemy ene = enemies[boards[nowBoard].matrix[opponentRow][opponentCol].stuffID];
 	enemyAttack = dice(0, ene.strength);
-	msg += ene.name + " (" + std::to_string(enemyHealth) + ") attacks you, attack: " + std::to_string(enemyAttack);
+	msg += ene.name + " (" + std::to_string(enemyHealth) + ") attacks you, attack: " + std::to_string(enemyAttack) + '\n';
 }
