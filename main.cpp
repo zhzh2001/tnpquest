@@ -3,6 +3,17 @@
 
 int main(int argc, char *argv[])
 {
+	if (argc>1&&(std::string(argv[1]) == "-h" || std::string(argv[1]) == "--help" || std::string(argv[1]) == "-?"))
+	{
+		std::cout << "--invincible, -i: You won't die\n";
+		std::cout << "--health, --hunger, --thirst: Modify values, will raise catValMax if >= 16\n";
+		std::cout << "--strength, --speed, --skill, --defense: Modify values\n";
+		std::cout << "--stepmax: Specify how many steps you can walk before decrease status values\n";
+		std::cout << "--no-water-penelty: You won't lose health in water even if you are not RiverClan\n";
+		std::cout << "--diagonal: You can move diagonally even if you are not ShadowClan\n";
+		std::cout << "--cat-val-max: Modify catValMax\n";
+		return 0;
+	}
 	printver();
 	pregame();
 	processParams(argc, argv);
@@ -13,8 +24,8 @@ int main(int argc, char *argv[])
 	{
 		clearScreen();
 		drawBoard();
-		std::cout << "Health: " << catHealth << " Hunger: " << catHunger << " Thirst: " << catThirst << " Strength: " << catStrength << " + " << strengthBonus << " Defense: " << catDefense << " Speed: " << catSpeed << " + " << speedBonus << std::endl;
-		std::cout << "Skill: " << catSkill << " Stars: " << starFound << " / " << starCount << " Status: " << (remainStep ? "Walking" : battling ? "Battling" : "Stopped") << " Clan: " << (catClan == thunder ? "ThunderClan" : catClan == shadow ? "ShadowClan" : catClan == wind ? "WindClan" : "RiverClan") << " Map: " << std::to_string(nowBoard + 1) << " / " << std::to_string(boardCount) << std::endl;
+		std::cout << "Health: " << catHealth << "/" << catValMax << "||Hunger: " << catHunger << "/" << catValMax << "||Thirst: " << catThirst << "/" << catValMax << "||Strength: " << catStrength << "+" << strengthBonus << "||Speed: " << catSpeed << "+" << speedBonus << std::endl;
+		std::cout << "Defense: " << catDefense << "||Skill: " << catSkill << "||Stars: " << starFound << "/" << starCount << "||Status: " << (remainStep ? "Walking" : battling ? "Battling" : "Stopped") << "||Clan: " << (catClan == thunder ? "ThunderClan" : catClan == shadow ? "ShadowClan" : catClan == wind ? "WindClan" : "RiverClan") << "||Map: " << std::to_string(nowBoard + 1) << "/" << std::to_string(boardCount) << std::endl;
 		std::cout << "< " << msg;
 		std::string cmd;
 		std::cout << "> " << std::flush;
@@ -416,7 +427,8 @@ void process(const std::string &cmd)
 				battling = true;
 				std::pair<int, int> range = enemies[boards[nowBoard].matrix[opponentRow][opponentCol].stuffID].health;
 				enemyHealth = std::uniform_int_distribution<>(range.first, range.second)(gen);
-				enemyTurn();
+				enemyAttack = 0;
+				battle();
 			}
 			else
 			{
@@ -564,6 +576,8 @@ void battle()
 		now.type = cell_t::None;
 		now.visibility = visibility_t::none;
 		battling = false;
+		nowRow = opponentRow;
+		nowCol = opponentCol;
 		generateStep();
 	}
 	else
@@ -765,16 +779,22 @@ void processStuff()
 			{
 				msg += " health points! ";
 				catHealth += opb.effect;
+				if (catHealth > catValMax)
+					catHealth = catValMax;
 			}
 			else if (opb.applyto == catVal_t::hunger)
 			{
 				msg += " hunger points! ";
 				catHunger += opb.effect;
+				if (catHunger > catValMax)
+					catHunger = catValMax;
 			}
 			else
 			{
 				msg += " thirst points! ";
 				catThirst += opb.effect;
+				if (catThirst > catValMax)
+					catThirst = catValMax;
 			}
 		}
 		else
@@ -849,15 +869,5 @@ void processParams(int argc, char *argv[])
 			diagonal = true;
 		else if (s == "--cat-val-max")
 			catValMax = std::atoi(argv[++i]);
-		else if (s == "-h" || s == "--help" || s == "-?")
-		{
-			std::cout << "--invincible, -i: You won't die\n";
-			std::cout << "--health, --hunger, --thirst: Modify values, will raise catValMax if >= 16\n";
-			std::cout << "--strength, --speed, --skill, --defense: Modify values\n";
-			std::cout << "--stepmax: Specify how many steps you can walk before decrease status values\n";
-			std::cout << "--no-water-penelty: You won't lose health in water even if you are not RiverClan\n";
-			std::cout << "--diagonal: You can move diagonally even if you are not ShadowClan\n";
-			std::cout << "--cat-val-max: Modify catValMax\n";
-		}
 	}
 }

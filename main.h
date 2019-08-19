@@ -8,7 +8,7 @@
 #include <cstdlib>
 #include <algorithm>
 
-const std::string version = "v0.2 alpha";
+const std::string version = "v0.2.1 alpha";
 std::minstd_rand gen(time(NULL)); //global random engine
 
 /***
