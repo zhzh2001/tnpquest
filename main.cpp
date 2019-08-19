@@ -300,6 +300,8 @@ void process(const std::string &cmd)
 	if (cmd == "q" || cmd == "quit")
 	{
 		std::cout << "farewell\n";
+		std::string tmp;
+		getline(std::cin, tmp);
 		exit(0);
 	}
 	if (remainStep)
@@ -342,6 +344,8 @@ void process(const std::string &cmd)
 					if (starFound >= starCount)
 					{
 						std::cerr << msg << "You win with " << std::to_string(starFound) << " vital items found and earn your warrior name: " << prefixes[catName] << suffixes[catName] << std::endl;
+						std::string tmp;
+						getline(std::cin, tmp);
 						exit(0);
 					}
 					msg += "But you only found " + std::to_string(starFound) + " vital items out of " + std::to_string(starCount) + ".\n";
@@ -502,6 +506,8 @@ void checkState()
 	{
 		std::cout << "< " << msg;
 		std::cerr << "You died! Meooooow!\n";
+		std::string tmp;
+		getline(std::cin, tmp);
 		exit(0);
 	}
 }
