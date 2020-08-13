@@ -6,6 +6,6 @@ Decompiled from *Warriors The New Prophecy Quest Game* Flash version, reimplemen
 
 # 构建 Build
 
-大概用支持C++11的编译器随便就可以编译吧，当然我用的是GCC。如果你不会编译或有问题，那就等我发布二进制文件吧。
+大概用支持C++11的编译器随便就可以编译吧，当然我用的是GCC。如果你不会编译或有问题，请到[Releases](https://github.com/zhzh2001/tnpquest/releases)下载二进制文件。
 
 Compilers with C++11 support will probably work, and GCC is recommended.
