@@ -1,0 +1,142 @@
+\documentclass[hyperref,UTF8,a4paper]{ctexart}
+
+\usepackage{amsmath,makecell,multirow,amsfonts,siunitx}
+
+% \usepackage{array}
+% \newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+
+\usepackage{geometry}
+\geometry{left=1in,right=1in,top=1in,bottom=1in}
+
+\usepackage{longtable,booktabs,graphicx,float,adjustbox,xurl}
+\usepackage[normalem]{ulem}
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+  
+\usepackage{fancyvrb,fvextra,color}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+
+%\usepackage{chngcntr}
+%\counterwithin{figure}{section}
+%\counterwithin{table}{section}
+%\renewcommand\thefigure{\thesection-\arabic{figure}}
+%\renewcommand\thetable{\thesection-\arabic{table}}
+
+\newcommand{\includegraphicx}[1]{\maxsizebox{\textwidth}{\textheight}{\includegraphics{#1}}}
+
+\title{基于《猫武士·新预言》小说原著的MUD游戏设计\\
+\bigskip \large 面向对象程序设计M1报告}
+
+\author{nullptr组}
+\date{2022 年 3 月 25 日}
+
+\begin{document}
+\maketitle
+
+\hypertarget{ux4ebaux5458ux4fe1ux606f}{%
+\section{人员信息}\label{ux4ebaux5458ux4fe1ux606f}}
+
+组名：nullptr
+
+组名介绍：\texttt{nullptr}是C++11的新特性，用来替换C风格的\texttt{NULL}，警示我们谨慎操作指针，关注内存安全，同时也具有较强的技术性。
+
+组员：\textbf{略}
+
+\hypertarget{ux9009ux9898ux4ecbux7ecd}{%
+\section{选题介绍}\label{ux9009ux9898ux4ecbux7ecd}}
+
+MUD游戏，原指\textbf{多用户地牢}（Multi-User
+Dungeon），这里泛指文字类网络游戏，是基于无图形化界面所开发的全部由文字与字符画构成的游戏。传统的MUD实现了一个在幻想的世界居住着虚构的种族与怪物的角色扮演游戏，玩家可以选择职业来获得特定的技能或力量，游戏目标一般是要杀死怪物、探索幻想的世界、完成任务、去冒险、透过角色扮演来构成故事并升级已创建的角色。
+
+在本次大程序的设计当中，我们选择以《猫武士》（Warrior
+Cats）小说为背景，开发一款MUD类文字冒险游戏，希望通过面向对象的程序设计实现游戏中诸如移动、探索、战斗、补给等功能，进而完成对于整个游戏内容的设计。
+
+\hypertarget{ux9009ux9898ux7406ux7531ux53caux7406ux89e3}{%
+\section{选题理由及理解}\label{ux9009ux9898ux7406ux7531ux53caux7406ux89e3}}
+
+\textbf{选题理由}：首先，我们组想充分利用C++面向对象的思想完成对于本次大程序的设计，而MUD游戏可以充分展示面向对象的程序设计思想；其次，当然是我们想做的游戏本身内容较为有趣，我们作为忠实的《猫武士》读者，实现一个基于《猫武士》的MUD游戏对于我们小组来说非常有趣。
+
+\textbf{选题理解}：本游戏的背景是在《猫武士》宇宙的二部曲------``新预言''（The
+New
+Prophecy），由于人类开发旧森林，四大族群被迫展开大迁徙到达湖区。在陌生的领地上，玩家作为族群一员，必须对领地展开探索，寻找水源、食物、营地等，同时还要躲避各种危险，通过捕猎和药草维持生命。游戏的\textbf{最终目标}是集齐四种族群生活的必需品，同时找到族群与星族（StarClan）祖先交流的圣地------\textbf{月池}（Moonpool），使族群能顺利定居在湖区，并获得自己的武士名。玩家可以选择成为雷族、影族、风族或河族的学徒，具有特定的属性加成，并通过随机数确定行为是否成功，类似DnD等游戏。
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/moonpool.jpg}
+\caption{原始游戏中的月池}
+\end{figure}
+
+玩家通过文本界面输入命令，来完成移动、探索、捕猎、战斗、休息、喝水等动作。后期我们打算对参数进行修改，增加可玩性，分出难度等级，实现资源卡等高级功能，甚至可以考虑网络联机游戏（形式未定）。
+
+\hypertarget{ux6280ux672fux624bux6bb5}{%
+\section{技术手段}\label{ux6280ux672fux624bux6bb5}}
+
+本次大程序将采用C++语言编写，运用面向对象的程序设计方法，拟将游戏设计中的每个事件、物品等内容封装为各个对象，并撰写相对应的代码来实现。如将``捕猎''、``意外受伤''等影响HP的事件进行抽象，从基类派生出各种不同的事件，并在它们各自的类中给出相对应的操作。
+
+本游戏基于猫武士官网很久以前的在线Flash游戏\footnote{\url{https://web.archive.org/web/20161121090738/http://www.warriorcats.com/games-and-extras/games/the-new-prophecy-quest}}，名为\emph{The
+New Prophecy Quest
+Game}，现已无法访问。为了方便初期开发，我们打算直接使用Flash游戏反编译获得的地形、物品等数据，并对英文文本进行翻译。
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/origin.png}
+\caption{原始游戏运行截图}
+\end{figure}
+
+在命令交互方面，首先实现\texttt{cin}的基本交互。然后打算采用GNU
+Readline来提升命令交互体验，例如支持Tab补全和命令历史等，达到类似GDB的命令体验。在文本界面方面，我们初步计划只使用文本打印和清屏来实现，后期有可能会使用ncurses来实现更好的文本界面图形效果。
+
+我们希望这个游戏是跨平台的，因此会尽量减少平台相关代码，并使用\texttt{\_WIN32}等平台宏来确保平台相关代码不会混用。C++标准原则上限制在C++11。
+
+\hypertarget{ux6bcfux6708ux8ba1ux5212}{%
+\section{每月计划}\label{ux6bcfux6708ux8ba1ux5212}}
+
+计划列表如下图所示：
+
+\begin{longtable}[]{p{0.15\linewidth}p{0.55\linewidth}p{0.15\linewidth}}
+\toprule
+时间 & 任务 & 完成与否\tabularnewline
+\midrule
+\endhead
+开题 - 3.26 & 确定游戏主题、人员分工以及后续计划 & 是\tabularnewline
+3.26 - 4.5 & 确定游戏文本内容及各项游戏数值 & 否\tabularnewline
+4.5 - 4.16 & 完成多文件结构的设计框架，完成游戏主体部分的代码撰写 &
+否\tabularnewline
+4.16 - 4.30 & 完成游戏其余部分的全部代码撰写 & 否\tabularnewline
+4.30 - 截止 & 测试、优化、改进程序代码，撰写实验报告 & 否\tabularnewline
+\bottomrule
+\end{longtable}
+\end{document}

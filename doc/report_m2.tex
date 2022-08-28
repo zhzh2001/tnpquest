@@ -1,0 +1,419 @@
+\documentclass[hyperref,UTF8,a4paper]{ctexart}
+
+\usepackage{amsmath,makecell,multirow,amsfonts,siunitx}
+
+% \usepackage{array}
+% \newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+
+\usepackage{geometry}
+\geometry{left=1in,right=1in,top=1in,bottom=1in}
+
+\usepackage{longtable,booktabs,graphicx,float,adjustbox,xurl}
+\usepackage[normalem]{ulem}
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+  
+\usepackage{fancyvrb,fvextra,color}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+
+%\usepackage{chngcntr}
+%\counterwithin{figure}{section}
+%\counterwithin{table}{section}
+%\renewcommand\thefigure{\thesection-\arabic{figure}}
+%\renewcommand\thetable{\thesection-\arabic{table}}
+
+\newcommand{\includegraphicx}[1]{\maxsizebox{\textwidth}{\textheight}{\includegraphics{#1}}}
+
+\title{基于《猫武士·新预言》小说原著的MUD游戏设计\\
+\bigskip \large 面向对象程序设计M2报告}
+
+\author{nullptr组}
+\date{2022 年 5 月 7 日}
+
+\begin{document}
+\maketitle
+
+\hypertarget{ux4ebaux5458ux4fe1ux606f}{%
+\section{人员信息}\label{ux4ebaux5458ux4fe1ux606f}}
+
+组名：nullptr
+
+组员：\textbf{略}
+
+\hypertarget{ux65b0ux7684ux8bbeux8ba1ux6784ux60f3}{%
+\section{新的设计构想}\label{ux65b0ux7684ux8bbeux8ba1ux6784ux60f3}}
+
+在本月撰写代码的过程中，我们对于游戏架构产生了一些新的想法，现将这些想法罗列如下：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  在原游戏基础上，我们拟设计两种游戏模式，一种是以表格画出简陋的地图，一种是所有系统信息通过命令行文本进行输出。玩家可以根据自己的偏好自由选择不同的游戏模式，这样便可以使得我们的游戏可以更好迎合玩家的不同喜好。
+\item
+  在输出形式上，我们拟采用 \texttt{ncurses}
+  库进行控制台文字输出。相比于一般的字符串输出， \texttt{ncurses}
+  库支持对文字颜色等属性进行修改，创建菜单、接受方向键输入、可以关闭回显和缓冲等，这便可以使得我们的游戏界面更为美观、具有吸引力。
+\item
+  为了使我们的游戏可以在不同PC端上均正常运行，我们拟将显示的字符限制在80*25（CGA）的尺寸之内。这样，当我们启动游戏调用控制台时，我们的游戏一定可以正确的显示，从而避免因控制台界面不够大从而导致的地图错乱等显示问题。\sout{理论上甚至可以移植到
+  DOS 下运行。}
+\item
+  在原游戏基础上，我们的游戏不但有英文版本，还有英译中版本，玩家可以根据自己的语言习惯在进入游戏时切换语言。同时，我们所有的名词翻译都严格按照猫武官方翻译（参考\href{https://warriors.huijiwiki.com/}{猫武士灰机}），使得我们的游戏内容更贴合原IP设定。包括但不限于族群名称、名字前后缀、专有名词（如两脚兽、雷鬼路等）。采用
+  \texttt{MultiString} 类实现，具体翻译可以直接见代码。
+\item
+  采用 CMake 生成 Makefile，同时对 Windows 也做了一些适配，在 Windows
+  下采用 pdcurses 代替 ncurses。同时解决了两个平台下 curses
+  中文乱码的问题。
+\item
+  代码规范：类名首字母大写，成员变量和函数首字母小写，统一采用驼峰命名。
+\end{enumerate}
+
+\hypertarget{ux672cux6708ux5177ux4f53ux8fdbux5ea6}{%
+\section{本月具体进度}\label{ux672cux6708ux5177ux4f53ux8fdbux5ea6}}
+
+\hypertarget{ux53cdux7f16ux8bd1}{%
+\subsection{反编译}\label{ux53cdux7f16ux8bd1}}
+
+首先我们需要通过反编译原 Flash 游戏来获得游戏数据和地图生成的逻辑。使用
+JPEXS Flash Decompiler 来完成，会自动根据 ActionScript
+类似字节码的二进制反编译生成伪代码，方便观察。
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/decompile.png}
+\caption{反编译截图}
+\end{figure}
+
+\hypertarget{ux7c7bux5b9aux4e49}{%
+\subsection{类定义}\label{ux7c7bux5b9aux4e49}}
+
+在本月的工作进程中，我们首先进行了确定游戏的文本内容及各项游戏数值的工作。根据原游戏所提供的数值，我们对这些数据进行了一定的继承与处理，使之符合我们现有的游戏要求。
+
+同时，我们对于游戏总体的框架与数据结构进行了设计，在让游戏基本功能可以顺利实现的基础上尽可能使用面向对象的数据结构进行编程，现对我们目前已设计完成的核心数据结构做如下介绍：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// cat.h}
+
+\NormalTok{Class name: Cat}
+    
+\NormalTok{Private member of }\KeywordTok{class}\NormalTok{: }
+\NormalTok{    name, clan, health, hunger, thirst, ……: 表示猫的名字、族群、健康、饥饿等等基础信息等私有属性}
+
+
+\NormalTok{Public member of }\KeywordTok{class}\NormalTok{:}
+\NormalTok{    Cat(), ~Cat(): 构造函数与析构函数}
+\NormalTok{    setClan(}\DataTypeTok{char}\NormalTok{ c), setHealth(}\DataTypeTok{int}\NormalTok{ h), setHunger(}\DataTypeTok{int}\NormalTok{ h), ……: 设置猫的种族、健康等各种属性的公开方法}
+\NormalTok{    getApprenticeName() }\AttributeTok{const}\NormalTok{, getWarriorName() }\AttributeTok{const}\NormalTok{, ……:获得猫学徒名字、武士名字等属性的公开方法}
+\end{Highlighting}
+\end{Shaded}
+
+Cat
+类保存所有角色相关的信息，并且完成角色的各种行为，例如战斗、捕猎、喝水等。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{//board.h}
+
+\NormalTok{Class name: Board}
+
+\NormalTok{Private member of }\KeywordTok{class}\NormalTok{:}
+\NormalTok{    screens, totalScreens, preys, injuries;}
+\NormalTok{    benefits, enemies, stars, ……:表示地图上敌人、星星等信息的私有属性}
+\NormalTok{    cells[screens][rows][cols], nowScreen, nowRow, nowCol: 表示目前所在位置在地图中的屏数、行数、列数的私有属性}
+
+\NormalTok{Public member of }\KeywordTok{class}\NormalTok{:}
+\NormalTok{    rows, cols, boxWidth, boxHeight: 地图长度、宽度等基本的公开属性}
+\NormalTok{    Board(}\BuiltInTok{std::}\NormalTok{minstd_rand &rng): 构造函数}
+\NormalTok{    getCell(}\DataTypeTok{int}\NormalTok{ board, }\DataTypeTok{int}\NormalTok{ row, }\DataTypeTok{int}\NormalTok{ col):获取cell信息}
+\NormalTok{    placeItems(}\BuiltInTok{std::}\NormalTok{minstd_rand &rng, }\BuiltInTok{std::}\NormalTok{vector<T> items), placeTerrain(}\BuiltInTok{std::}\NormalTok{minstd_rand &rng), ……:对地图进行事件放置等操作的公开方法}
+\NormalTok{    clearScreen(), move(}\DataTypeTok{int}\NormalTok{ ch): 清屏、移动函数}
+\end{Highlighting}
+\end{Shaded}
+
+Board 类保存地图相关的信息，地图由 13 屏组成，每屏 5 行 8
+列（原游戏如此）。同时提供了一些方法，以便上层调用来生成地图。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{//cell.h}
+
+\NormalTok{Class name: Cell}
+
+\NormalTok{Private member of }\KeywordTok{class}\NormalTok{:}
+\NormalTok{    visibility: 表示可见性的私有属性}
+\NormalTok{    *item, *terrain, *star: 指向事件、地形、星星的私有指针}
+
+\NormalTok{Public member of }\KeywordTok{class}\NormalTok{:}
+\NormalTok{    Cell(): 构造函数}
+\NormalTok{    *getItem(), *getTerrain(), getVisibility(): 获取格子上的物品、地形、可见性等信息的公开方法}
+\NormalTok{    setItem(}\AttributeTok{const}\NormalTok{ Item *item), setTerrain(}\AttributeTok{const}\NormalTok{ Terrain *terrain), ……: 设置物品、地形等属性的公开方法}
+\NormalTok{    renderTerrain(), renderItem(): 渲染格子上的地形、物品的公开方法}
+\end{Highlighting}
+\end{Shaded}
+
+Cell
+类表示地图上的一个格子，每个格子都有一个地形，还可能有物品（包括敌人、猎物等）或族群必需品（也就是星星）。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{//item.h}
+
+\NormalTok{Class name: Item}
+
+\NormalTok{Private member of }\KeywordTok{class}\NormalTok{:}
+\NormalTok{    name: 表示物品名称的私有属性（双语）}
+\NormalTok{    counts, places: 表示物品数量、位置等的私有属性}
+\NormalTok{    explore, scent: 表示该物品是否可探索，可闻到的私有属性}
+
+\NormalTok{Public member of }\KeywordTok{class}\NormalTok{:}
+\NormalTok{    Item(MultiString name, }\BuiltInTok{std::}\NormalTok{vector<}\DataTypeTok{int}\NormalTok{> counts, }\BuiltInTok{std::}\NormalTok{vector<}\DataTypeTok{int}\NormalTok{> places, }\DataTypeTok{bool}\NormalTok{ explore, }\DataTypeTok{bool}\NormalTok{ scent): 构造函数}
+\NormalTok{    getName(), &getCounts(), ……: 获取物品名称、数量等信息的公开方法}
+\NormalTok{    trigger(): 触发事件纯虚函数}
+        
+\CommentTok{//defense.h; enemy.h; injury.h; prey.h}
+        
+\NormalTok{Class name: defense, enemy, injury, prey}
+\NormalTok{All }\KeywordTok{public}\NormalTok{ inheritanced from }\KeywordTok{class}\NormalTok{ Item.}
+\end{Highlighting}
+\end{Shaded}
+
+Item
+类是物品的抽象基类，记录了物品生成和使用的基本属性，以及在猫不小心走上去时会发生的事件
+\texttt{trigger()}。各种物品实体类直接作为常量硬编码在源代码里，记录初始生成数据。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{//star.h}
+
+\NormalTok{Class name: Star}
+
+\NormalTok{Private member of }\KeywordTok{class}\NormalTok{:}
+\NormalTok{    name, enemies: 表示星星名字（双语）、敌人信息等私有属性}
+
+\NormalTok{Public member of }\KeywordTok{class}\NormalTok{:}
+\NormalTok{    Star(MultiString name, }\BuiltInTok{std::}\NormalTok{vector<}\DataTypeTok{int}\NormalTok{> enemies): 构造函数}
+\NormalTok{    getName(), getEnemies(): 获取星星名字、敌人信息等的公开方法}
+\end{Highlighting}
+\end{Shaded}
+
+Star 类表示必需品生成相关的属性，其中 \texttt{enemies}
+原游戏就没用到，只是为了兼容而保留。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{//terrain.h}
+
+\NormalTok{Class name: Terrain}
+
+\NormalTok{Private member of }\KeywordTok{class}\NormalTok{:}
+\NormalTok{    name, visible, *cells: 表示地形名字（双语）、可见性、所在单元格等信息的私有属性}
+
+\KeywordTok{public}\NormalTok{:}
+\NormalTok{    Terrain(MultiString name, }\DataTypeTok{bool}\NormalTok{ visible): 构造函数}
+\NormalTok{    getName(), getVisible(): 获取地形名称、可见性信息的公开方法}
+\NormalTok{    addCell(Cell *cell), randomCell(}\BuiltInTok{std::}\NormalTok{minstd_rand &rng, Cell *&cell): 随机生成并设置单元格信息的公开方法}
+\end{Highlighting}
+\end{Shaded}
+
+Terrain
+类表示地形，还在生成地图时记录了该地形的所有格子，方便后面放置物品。\texttt{visible}
+也同理只是为了兼容而保留的，实际都为真。
+
+\hypertarget{ux6e38ux620fux521dux59cbux5316}{%
+\subsection{游戏初始化}\label{ux6e38ux620fux521dux59cbux5316}}
+
+除去上述数据结构的设计之外，在本月的工作中我们还将该MUD游戏的初始化部分推进完毕。在
+\texttt{controller/game.cpp}
+文件中，经过代码的撰写，目前我们的程序已可以使用CMake进行编译运行，并已经能够进入游戏初始界面，然后进行角色的随机创建。可以说，对于游戏正式开启之前的所有工作，我们都已准备完毕。现对
+\texttt{game.cpp} 中已实现的功能如下简要展示：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{//game.cpp}
+
+\NormalTok{Game::Game(}\DataTypeTok{int}\NormalTok{ argc, }\DataTypeTok{char}\NormalTok{ *argv[]) : rng(}\BuiltInTok{std::}\NormalTok{time(NULL)), board(rng), maxStep(}\DecValTok{5}\NormalTok{)\{……\}}
+\CommentTok{//构造函数}
+
+\NormalTok{Game::~Game()\{……\}}
+\CommentTok{//析构函数}
+
+\DataTypeTok{void}\NormalTok{ Game::run()\{……\}}
+\CommentTok{//启动游戏}
+
+\DataTypeTok{void}\NormalTok{ Game::parseArguments(}\DataTypeTok{int}\NormalTok{ argc, }\DataTypeTok{char}\NormalTok{ *argv[])\{……\}}
+\CommentTok{//解析参数，向玩家提供展示帮助信息、设置中英文、修改游戏基本设置等功能}
+
+\DataTypeTok{void}\NormalTok{ Game::readAttributes()\{……\}}
+\CommentTok{//读取属性，赋予玩家昵称、族群等基本属性}
+\end{Highlighting}
+\end{Shaded}
+
+游戏中猫的移动也已经实现，方便调试生成的地图数据。由于影族猫可以斜着走，必须找到一种方法在四个方向键之外增加四种方向。理论上可以采用
+Ctrl/Shift/Alt
+组合键，但不太自然，最好能识别同时按下两个键，例如同时按下左和上表示左上。目前采用了
+ncurses 提供的 \texttt{halfdelay}
+模式，尝试读取两个按键，如果第二个按键没有超时（阈值为 ncurses
+支持最小的 100
+ms）就认为两个按键同时按下，走对角线，并且只算走了一步（后面每次走的步数是有上限的）。
+
+\hypertarget{ux5173ux4e8eux53efux7528ux6027ux7684ux8bf4ux660e}{%
+\subsection{关于可用性的说明}\label{ux5173ux4e8eux53efux7528ux6027ux7684ux8bf4ux660e}}
+
+本游戏支持在类 UNIX 环境和 Windows 环境下运行，其中类 UNIX
+环境需要自行安装 \texttt{libncurses6}，Windows 环境需要自行编译安装
+\texttt{pdcurses}。在 Windows 下 UTF-8
+边框字符和中文字符可能显示有问题，可根据需要加上 \texttt{-\/-fallback}
+选项。UNIX 环境中文请不要轻易使用。
+
+Windows 控制台有旧版控制台、新版控制台（\texttt{conhost.exe}）和 Windows
+Terminal 三种，后两种应该在 Windows 10 及以上存在，具体可用性列表如下：
+
+\begin{longtable}[]{@{}ccc@{}}
+\toprule
+\begin{minipage}[b]{0.25\columnwidth}\centering
+环境\strut
+\end{minipage} & \begin{minipage}[b]{0.09\columnwidth}\centering
+语言\strut
+\end{minipage} & \begin{minipage}[b]{0.46\columnwidth}\centering
+可用性\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.25\columnwidth}\centering
+UNIX\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
+英文\strut
+\end{minipage} & \begin{minipage}[t]{0.46\columnwidth}\centering
+原生支持，也可以使用 fallback\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.25\columnwidth}\centering
+UNIX\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
+中文\strut
+\end{minipage} & \begin{minipage}[t]{0.46\columnwidth}\centering
+原生支持，请勿使用 fallback\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.25\columnwidth}\centering
+Windows 旧版控制台\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
+英文\strut
+\end{minipage} & \begin{minipage}[t]{0.46\columnwidth}\centering
+请使用 fallback\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.25\columnwidth}\centering
+Windows 旧版控制台\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
+中文\strut
+\end{minipage} & \begin{minipage}[t]{0.46\columnwidth}\centering
+请使用 fallback\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.25\columnwidth}\centering
+Windows 新版控制台\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
+英文\strut
+\end{minipage} & \begin{minipage}[t]{0.46\columnwidth}\centering
+原生支持有小 bug，可以使用 fallback\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.25\columnwidth}\centering
+Windows 新版控制台\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
+中文\strut
+\end{minipage} & \begin{minipage}[t]{0.46\columnwidth}\centering
+不支持！请使用旧版控制台\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.25\columnwidth}\centering
+Windows Terminal\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
+英文\strut
+\end{minipage} & \begin{minipage}[t]{0.46\columnwidth}\centering
+原生支持，也可使用 fallback\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.25\columnwidth}\centering
+Windows Terminal\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
+中文\strut
+\end{minipage} & \begin{minipage}[t]{0.46\columnwidth}\centering
+不支持！请使用旧版控制台\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/wincon.png}
+\caption{调整 Windows 新旧版控制台}
+\end{figure}
+
+\hypertarget{ux8fd0ux884cux622aux56fe}{%
+\subsection{运行截图}\label{ux8fd0ux884cux622aux56fe}}
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/cmd.png}
+\caption{Windows 旧版控制台}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/conhost.png}
+\caption{Windows 新版控制台}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/wt.png}
+\caption{Windows Terminal}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/wsl.png}
+\caption{类 UNIX (WSL)}
+\end{figure}
+
+\hypertarget{ux4e0bux5468ux671fux5de5ux4f5cux8ba1ux5212}{%
+\section{下周期工作计划}\label{ux4e0bux5468ux671fux5de5ux4f5cux8ba1ux5212}}
+
+\begin{itemize}
+\tightlist
+\item
+  撰写游戏开始后主体部分的代码，实现战斗、饮水、触发随机事件等游戏功能
+\item
+  完善现有数据结构并创建新的数据结构，或对现有数据结构上使用派生、友元等方式，使得其支持我们新添加的功能
+\item
+  对整体代码进行debug，使之可以正常运行
+\end{itemize}
+\end{document}

@@ -1,0 +1,631 @@
+\documentclass[hyperref,UTF8,a4paper]{ctexart}
+
+\usepackage{amsmath,makecell,multirow,amsfonts,siunitx,amssymb}
+
+%\usepackage{array}
+%\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+
+\usepackage{geometry}
+\geometry{left=1in,right=1in,top=1in,bottom=1in}
+
+\usepackage{longtable,booktabs,graphicx,float,adjustbox,xurl}
+\usepackage[normalem]{ulem}
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+  
+\usepackage{fancyvrb,fvextra,color}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+
+%\usepackage{chngcntr}
+%\counterwithin{figure}{section}
+%\counterwithin{table}{section}
+%\renewcommand\thefigure{\thesection-\arabic{figure}}
+%\renewcommand\thetable{\thesection-\arabic{table}}
+
+\newcommand{\includegraphicx}[1]{\maxsizebox{\textwidth}{\textheight}{\includegraphics{#1}}}
+
+\title{基于《猫武士·新预言》小说原著的MUD游戏设计\\
+\bigskip\large 面向对象程序设计最终报告}
+\author{nullptr组}
+\date{2022 年 6 月 10 日}
+
+\begin{document}
+\maketitle
+
+\hypertarget{ux4ebaux5458ux4fe1ux606f}{%
+\section{人员信息}\label{ux4ebaux5458ux4fe1ux606f}}
+
+组名：nullptr
+
+组员：\textbf{略}
+
+\hypertarget{ux603bux4f53ux4ecbux7ecd}{%
+\section{总体介绍}\label{ux603bux4f53ux4ecbux7ecd}}
+
+\hypertarget{ux5185ux5bb9ux7b80ux4ecb}{%
+\subsection{内容简介}\label{ux5185ux5bb9ux7b80ux4ecb}}
+
+在本次大程序的设计当中，我们选择了MUD类文字冒险游戏作为方向，并以《猫武士》（Warrior
+Cats）小说二部曲------``新预言''（The New
+Prophecy）为背景，通过面向对象的程序设计方法完成对本次大程序的设计。在游戏中，玩家的最终目标是在地图上保持存活，并收集齐四种族群生活的必需品（Stars）。为了达到这个目的，玩家在游戏中可以通过命令行与程序进行移动、战斗、探索、捕猎、喝水、休息等操作的交互，如此丰富的玩家操作使得我们的游戏具有较强的可玩性。
+
+此外，值得一提的是本游戏的主题框架灵感来源于猫武士官网上一个名为\href{https://web.archive.org/web/20161121090738/http://www.warriorcats.com/games-and-extras/games/the-new-prophecy-quest}{\emph{The
+New Prophecy Quest
+Game}}的Flash游戏，目前该游戏已经停止服务。为了使得我们的游戏可玩性更强、设定更贴合原作，在游戏开发中，大部分地形、敌人、角色属性等基础数据均来源于这款Flash游戏。
+
+\hypertarget{ux6280ux672fux624bux6bb5ux4e0eux8fd0ux884cux73afux5883}{%
+\subsection{技术手段与运行环境}\label{ux6280ux672fux624bux6bb5ux4e0eux8fd0ux884cux73afux5883}}
+
+本次大程序将采用C++语言编写，严格运用面向对象的设计方法进行程序开发，将游戏中的物品、事件等内容封装为不同的对象，并撰写相应代码来对其中的具体功能进行实现。其中我们所使用的C++标准遵循C++11的版本规范。
+
+值得一提的是，在本游戏我们使用了 ncurses
+字符终端处理库对控制台文字进行输出。相比于一般的字符串输出， ncurses
+库支持对文字颜色等属性进行修改，创建菜单、接受方向键输入、可以关闭回显和缓冲等，这便可以使得我们的游戏界面更为美观、具有吸引力。
+
+该游戏是跨平台的，因此我们在设计中使用了 \texttt{\_WIN32}
+等平台宏来确保平台相关代码不会混用。它可以支持在类 UNIX 与 Windows
+两种不同环境下运行，其中类 UNIX 环境需要自行安装
+\texttt{libncurses6}，Windows 环境需要自行编译安装
+pdcurses。这也是我们选择 ncurses 库进行字符输出的另一个理由： ncurses
+库可以在任何遵循 ANSI / POSIX 标准的 UNIX
+系统上运行，此外，它还可以从系统数据库中检测终端的属性并进行自动调整，提供一个不受终端约束的端口，这使得它可以在不同的系统平台与不同的终端上表现良好。
+
+为了支持 Windows 终端中文 UTF-8 显示，需要在 pdcurses
+编译时加入选项，而且 UTF-8
+显示长度与字符串长度不符也带来了很多麻烦。最终 Windows
+的中文支持仍不完善，对话框仍存在显示错位问题，有待改进。在 Windows
+下请尽量使用 WSL。
+
+\hypertarget{ux4f7fux7528ux7684ux9762ux5411ux5bf9ux8c61ux548c-c-ux7279ux6027}{%
+\subsection{使用的面向对象和 C++
+特性}\label{ux4f7fux7528ux7684ux9762ux5411ux5bf9ux8c61ux548c-c-ux7279ux6027}}
+
+\begin{itemize}
+\tightlist
+\item
+  在游戏中需要放置的各种物品创建了一个抽象基类，并派生出不同的子类，通过虚函数实现\textbf{多态}
+\item
+  使用函数\textbf{模板}来实现在地图上放置不同种类的物品（当然用基类指针也是可行的）
+\item
+  使用静态类，例如 \texttt{MsgBox} 类来实现类似名称空间的功能
+\item
+  使用 RTTI 特性获得运行时类型信息，不必显式保存物品的类型
+
+  \begin{itemize}
+  \tightlist
+  \item
+    使用 \texttt{typeid}
+    推断类型，例如在放置不同物品的函数模板中允许特别处理 \texttt{Enemy}
+    子类，以便后续操作
+  \item
+    使用 \texttt{dynamic\_cast} 动态向下转换，例如 \texttt{Prey}
+    子类特有的 \texttt{hunt}
+    函数只有在玩家主动捕猎时会调用，否则玩家只会吓走猎物
+  \end{itemize}
+\item
+  使用 random 标准库、\texttt{override}, \texttt{auto} 关键字等 C++11
+  特性
+\end{itemize}
+
+\hypertarget{ux6e38ux620fux8bbeux8ba1}{%
+\section{游戏设计}\label{ux6e38ux620fux8bbeux8ba1}}
+
+\hypertarget{ux7c7bux4ecbux7ecd}{%
+\subsection{类介绍}\label{ux7c7bux4ecbux7ecd}}
+
+\hypertarget{ux7269ux54c1ux57faux7c7bitem}{%
+\subsubsection{物品基类：item}\label{ux7269ux54c1ux57faux7c7bitem}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Class name: Item}
+
+\NormalTok{Private member of }\KeywordTok{class}\NormalTok{:}
+\NormalTok{    name: 表示物品名称的私有属性（双语）}
+\NormalTok{    counts, places: 表示物品数量、位置等的私有属性}
+\NormalTok{    explore, scent: 表示该物品是否可探索，可闻到的私有属性}
+
+\NormalTok{Public member of }\KeywordTok{class}\NormalTok{:}
+\NormalTok{    Item(MultiString name, }\BuiltInTok{std::}\NormalTok{vector<}\DataTypeTok{int}\NormalTok{> counts, }\BuiltInTok{std::}\NormalTok{vector<}\DataTypeTok{int}\NormalTok{> places, }\DataTypeTok{bool}\NormalTok{ explore, }\DataTypeTok{bool}\NormalTok{ scent): 构造函数}
+\NormalTok{    getName(), &getCounts(), ……: 获取物品名称、数量等信息的公开方法}
+\NormalTok{    trigger(): 触发事件纯虚函数}
+\end{Highlighting}
+\end{Shaded}
+
+Item
+类是物品的抽象基类，记录了物品生成和使用的基本属性，以及在猫不小心走上去时会发生的事件
+\texttt{trigger()}。各种物品实体类直接作为常量硬编码在源代码里，记录初始生成数据。
+
+\hypertarget{ux7269ux54c1ux6d3eux751fux7c7bbenefit-defense-enemy-injury-prey}{%
+\subsubsection{物品派生类：benefit, defense, enemy, injury,
+prey}\label{ux7269ux54c1ux6d3eux751fux7c7bbenefit-defense-enemy-injury-prey}}
+
+在五个不同的派生类中，我们用同一个抽象基类 Item
+对不同地图事件进行了不同派生。它们不仅有自己的构造、析构函数，继承了父类中获取各种信息的公开方法，还对父类中的
+\texttt{trigger()} 触发器纯虚函数进行了重载。接下来对这些
+\texttt{trigger} 进行简单介绍：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{//triggers from benefit.cpp, enemy.cpp, defense.cpp, injury.cpp, prey.cpp}
+\CommentTok{//pseudo code}
+
+\DataTypeTok{void}\NormalTok{ Benefit::trigger(Cat &cat) }\AttributeTok{const}
+\NormalTok{\{}
+\NormalTok{    roll effect from dice to deic + }\DecValTok{6}\NormalTok{;}
+\NormalTok{    print benefit info in msgbox;}
+    \ControlFlowTok{if}\NormalTok{ (effect > require) then}
+\NormalTok{        print get benefit info in msgbox;}
+        \ControlFlowTok{switch}\NormalTok{ (applyto)}
+        \ControlFlowTok{case}\NormalTok{ CatVal::health/hunger/thirst: gain health/hunger/thirst }\KeywordTok{and}\NormalTok{ print info in msgbox;}
+        \ControlFlowTok{default}\NormalTok{: something wrong }\KeywordTok{and}\NormalTok{ print err info in msgbox;}
+    \ControlFlowTok{else}\NormalTok{ then}
+\NormalTok{        reduce attribute }\KeywordTok{and}\NormalTok{ print info in msgbox;}
+\NormalTok{\}}
+
+\DataTypeTok{void}\NormalTok{ Enemy::trigger(Cat &cat) }\AttributeTok{const}
+\NormalTok{\{}
+\NormalTok{    roll attack }\KeywordTok{and}\NormalTok{ health of enemy;}
+\NormalTok{    first <- }\KeywordTok{true}\NormalTok{;}
+    \ControlFlowTok{do}
+\NormalTok{        print attack info in msg;}
+        \ControlFlowTok{if}\NormalTok{ (first) then}
+\NormalTok{            create msgbox;}
+        \ControlFlowTok{else}\NormalTok{ then}
+            \DataTypeTok{int}\NormalTok{ option <- defend }\KeywordTok{or}\NormalTok{ flee;}
+            \ControlFlowTok{if}\NormalTok{ (option == }\DecValTok{2}\NormalTok{) then}
+\NormalTok{                flee }\KeywordTok{and} \ControlFlowTok{return}\NormalTok{;}
+\NormalTok{        first <- }\KeywordTok{false}\NormalTok{;}
+\NormalTok{        roll defense of cat;}
+\NormalTok{        dmg_to_cat <- max\{}\DecValTok{0}\NormalTok{, attack_of_enemy - defense_of_cat\};}
+\NormalTok{        cat lose health;}
+\NormalTok{        roll attack of cat;}
+\NormalTok{        roll defense of enemy from }\DecValTok{0}\NormalTok{ to defense;}
+\NormalTok{        dmg_to_enemy <- max\{}\DecValTok{0}\NormalTok{, attack_of_cat - defense_of_enemy\};}
+\NormalTok{        enemy lose health;}
+\NormalTok{        print lose health info in msgbox;}
+    \ControlFlowTok{while}\NormalTok{ (enemyHealth > }\DecValTok{0}\NormalTok{);}
+\NormalTok{\}}
+
+\DataTypeTok{void}\NormalTok{ DefenseAction::trigger(Cat &cat) }\AttributeTok{const}
+\NormalTok{\{}
+\NormalTok{    roll damage in damagerange;}
+\NormalTok{    roll result;}
+\NormalTok{    print defense info in msg;}
+\NormalTok{    result <- max\{damage - result, }\DecValTok{0}\NormalTok{\};}
+\NormalTok{    print health losing info in msg;}
+\NormalTok{    create msgbox;}
+\NormalTok{    cat lose health;}
+\NormalTok{\}}
+
+\DataTypeTok{void}\NormalTok{ Injury::trigger(Cat &cat) }\AttributeTok{const}
+\NormalTok{\{}
+\NormalTok{    roll damage from }\DecValTok{1}\NormalTok{ to damage;}
+\NormalTok{    print max_damage }\KeywordTok{and}\NormalTok{ injury info in msgbox;}
+\NormalTok{    cat lose health;}
+\NormalTok{\}}
+
+\DataTypeTok{void}\NormalTok{ Prey::trigger(Cat &cat) }\AttributeTok{const}
+\NormalTok{\{}
+\NormalTok{    print scared away info in msgbox;}
+\NormalTok{\}}
+
+\DataTypeTok{void}\NormalTok{ Benefit::trigger(Cat &cat) }\AttributeTok{const}
+\NormalTok{\{}
+\NormalTok{    roll dice to see whether to use the benefit;}
+    \ControlFlowTok{if}\NormalTok{ (dice > require) then}
+\NormalTok{        apply health/hunger/thirst to cat;}
+\NormalTok{        show success in msgbox;}
+    \ControlFlowTok{else}\NormalTok{ then}
+\NormalTok{        show fail in msgbox;}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+从上述伪代码中我们可以看出，无论是遇敌战斗的事件、在战斗中防御的事件、遭遇受伤的事件，还是吓走猎物的事件，其触发器都是基于
+\texttt{Item} 类的纯虚函数 \texttt{trigger}
+中实现的。这使得我们的程序实现了动态联编，实现了不同触发器之间接口的统一。这样当玩家在地图上移动时，遇到各种物品，只需要调用
+\texttt{trigger} 即可实现对应的触发事件。
+
+值得一提的是，对于 \texttt{Prey} 这一派生类，我们的 \texttt{trigger}
+做的仅仅是弹出敌人已被吓跑的信息。这表明我们倘若直接走到 \texttt{Prey}
+所在的格子上会直接把猎物吓跑，而不会进行捕猎。而进行捕猎操作时，调用的是
+\texttt{Prey} 类中的另一个方法hunt。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{//prey.cpp}
+\CommentTok{//pseudo code}
+\DataTypeTok{void}\NormalTok{ Prey::hunt(Cat &cat) }\AttributeTok{const}
+\NormalTok{\{}
+    \DataTypeTok{int}\NormalTok{ res <- roll val from }\DecValTok{0}\NormalTok{ to skill;}
+\NormalTok{    print hunt info in msgbox;}
+    \ControlFlowTok{if}\NormalTok{ (res >= skill) then}
+\NormalTok{        print hunt succeeded info in msgbox;}
+\NormalTok{        gain hunger;}
+    \ControlFlowTok{else}\NormalTok{ then}
+\NormalTok{        print hunt failed info in msgbox;}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{ux5730ux56feux76f8ux5173ux7c7bboard-cell-terrain}{%
+\subsubsection{地图相关类：board, cell,
+terrain}\label{ux5730ux56feux76f8ux5173ux7c7bboard-cell-terrain}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Class name: Board}
+
+\NormalTok{Private member of }\KeywordTok{class}\NormalTok{:}
+\NormalTok{    screens, totalScreens, preys, injuries;}
+\NormalTok{    benefits, enemies, stars, ……:表示地图上敌人、星星等信息的私有属性}
+\NormalTok{    cells[screens][rows][cols], nowScreen, nowRow, nowCol: 表示目前所在位置在地图中的屏数、行数、列数的私有属性}
+
+\NormalTok{Public member of }\KeywordTok{class}\NormalTok{:}
+\NormalTok{    rows, cols, boxWidth, boxHeight: 地图长度、宽度等基本的公开属性}
+\NormalTok{    Board(}\BuiltInTok{std::}\NormalTok{minstd_rand &rng): 构造函数}
+\NormalTok{    getCell(}\DataTypeTok{int}\NormalTok{ board, }\DataTypeTok{int}\NormalTok{ row, }\DataTypeTok{int}\NormalTok{ col):获取cell信息}
+\NormalTok{    placeItems(}\BuiltInTok{std::}\NormalTok{minstd_rand &rng, }\BuiltInTok{std::}\NormalTok{vector<T> items), placeTerrain(}\BuiltInTok{std::}\NormalTok{minstd_rand &rng), ……:对地图进行事件放置等操作的公开方法}
+\NormalTok{    clearScreen(), move(}\DataTypeTok{int}\NormalTok{ ch):清屏、移动函数}
+\NormalTok{    backupCoordinates(), restoreCoordinates():控制当前位置的函数}
+\NormalTok{    trigger(Cat &cat):事件触发器}
+\NormalTok{    getScreen() }\AttributeTok{const}\NormalTok{:获取当前位于第几块地图的公开方法}
+\NormalTok{    moveTarget(}\DataTypeTok{int}\NormalTok{ ch), battle(Cat &cat, }\DataTypeTok{bool}\NormalTok{ fallback), ……:对地图周围格子进行战斗、捕猎、探索等操作的公开方法}
+\end{Highlighting}
+\end{Shaded}
+
+Board 类保存地图相关的信息，地图由 13 屏组成，每屏 5 行 8
+列（原游戏如此）。同时提供了一些方法，以便上层调用来生成地图。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Class name: Cell}
+
+\NormalTok{Private member of }\KeywordTok{class}\NormalTok{:}
+\NormalTok{    visibility: 表示可见性的私有属性}
+\NormalTok{    *item, *terrain, *star: 指向事件、地形、星星的私有指针}
+
+\NormalTok{Public member of }\KeywordTok{class}\NormalTok{:}
+\NormalTok{    Cell(): 构造函数}
+\NormalTok{    *getItem(), *getTerrain(), getVisibility(): 获取格子上的物品、地形、可见性等信息的公开方法}
+\NormalTok{    setItem(}\AttributeTok{const}\NormalTok{ Item *item), setTerrain(}\AttributeTok{const}\NormalTok{ Terrain *terrain), ……: 设置物品、地形等属性的公开方法}
+\NormalTok{    renderTerrain(), renderItem(): 渲染格子上的地形、物品的公开方法}
+\NormalTok{    trigger(Cat &cat):检查格子上战斗状态的触发器}
+\NormalTok{    isEnemy() }\AttributeTok{const}\NormalTok{:检查格子上是否有敌人的公开方法}
+\NormalTok{    hunt(Cat &cat):检查格子上的物品是否为猎物的公开方法}
+\end{Highlighting}
+\end{Shaded}
+
+Cell
+类表示地图上的一个格子，每个格子都有一个地形，还可能有物品（包括敌人、猎物等）或族群必需品（也就是星星）。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Class name: Terrain}
+
+\NormalTok{Private member of }\KeywordTok{class}\NormalTok{:}
+\NormalTok{    name, visible, *cells: 表示地形名字（双语）、可见性、所在单元格等信息的私有属性}
+
+\NormalTok{Public member of }\KeywordTok{class}\NormalTok{:}
+\NormalTok{    Terrain(MultiString name, }\DataTypeTok{bool}\NormalTok{ visible): 构造函数}
+\NormalTok{    getName(), getVisible(): 获取地形名称、可见性信息的公开方法}
+\NormalTok{    addCell(Cell *cell), randomCell(}\BuiltInTok{std::}\NormalTok{minstd_rand &rng, Cell *&cell): 随机生成并设置单元格信息的公开方法}
+\end{Highlighting}
+\end{Shaded}
+
+Terrain
+类表示地形，还在生成地图时记录了该地形的所有格子，方便后面放置物品。\texttt{visible}
+也同理只是为了兼容而保留的，实际都为真。
+
+\hypertarget{ux5176ux4ed6ux7c7bcat-star}{%
+\subsubsection{其他类：cat, star}\label{ux5176ux4ed6ux7c7bcat-star}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Class name: Cat}
+    
+\NormalTok{Private member of }\KeywordTok{class}\NormalTok{: }
+\NormalTok{    name, clan, health, hunger, thirst, ……: 表示猫的名字、族群、健康、饥饿等等基础信息等私有属性}
+
+\NormalTok{Public member of }\KeywordTok{class}\NormalTok{:}
+\NormalTok{    Cat(), ~Cat(): 构造函数与析构函数}
+\NormalTok{    setClan(}\DataTypeTok{char}\NormalTok{ c), setHealth(}\DataTypeTok{int}\NormalTok{ h), setHunger(}\DataTypeTok{int}\NormalTok{ h), ……: 设置猫的种族、健康等各种属性的公开方法}
+\NormalTok{    getApprenticeName() }\AttributeTok{const}\NormalTok{, getWarriorName() }\AttributeTok{const}\NormalTok{, ……:获得猫学徒名字、武士名字等属性的公开方法}
+\NormalTok{    generateStep() }\AttributeTok{const}\NormalTok{:生成前进步数的公开方法}
+\NormalTok{    loseVal(), checkDead() }\AttributeTok{const}\NormalTok{, loseHealth(}\DataTypeTok{int}\NormalTok{ h),……:扣除各项属性、检查是否死亡的公开方法}
+\NormalTok{    gainHealth(}\DataTypeTok{int}\NormalTok{ h), gainHunger(}\DataTypeTok{int}\NormalTok{ h),gainThirst(}\DataTypeTok{int}\NormalTok{ h):增加各项属性数值的公开方法}
+\NormalTok{    rollVal(CatVal val) }\AttributeTok{const}\NormalTok{, rollAttack() }\AttributeTok{const}\NormalTok{, rollDefense() }\AttributeTok{const}\NormalTok{:战斗相关生成随即数值的公开方法}
+\NormalTok{    flee(), hasFled(), resetFled():与逃跑状态相关的公开方法}
+\NormalTok{    incStar(), getDiagonal() }\AttributeTok{const}\NormalTok{, getWaterproof() }\AttributeTok{const}\NormalTok{, rest(),……:获取星星、休息等各动作相关的公开方法}
+\end{Highlighting}
+\end{Shaded}
+
+Cat
+类保存所有角色相关的信息，并且完成角色的各种行为，例如战斗、捕猎、喝水等。在该类中，我们设置了有关上述行为的公有函数成员，方便实现游戏中的相关功能。同时还增加了显示及修改stars,
+diagonal,
+waterproof等属性的公开方法，方便在类外对这些私有成员进行读取或修改。
+
+\hypertarget{ux6e38ux620fux4e3bux4f53ux90e8ux5206ux4ee3ux7801ux4ecbux7ecd}{%
+\subsection{游戏主体部分代码介绍}\label{ux6e38ux620fux4e3bux4f53ux90e8ux5206ux4ee3ux7801ux4ecbux7ecd}}
+
+\hypertarget{ux6e38ux620fux521dux59cbux5316ux51fdux6570}{%
+\subsubsection{游戏初始化函数}\label{ux6e38ux620fux521dux59cbux5316ux51fdux6570}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{//game.cpp}
+
+\NormalTok{Game::Game(}\DataTypeTok{int}\NormalTok{ argc, }\DataTypeTok{char}\NormalTok{ *argv[]) : rng(}\BuiltInTok{std::}\NormalTok{time(NULL)), board(rng), maxStep(}\DecValTok{5}\NormalTok{)\{……\}}
+\NormalTok{Game::~Game()\{……\}}
+\DataTypeTok{void}\NormalTok{ Game::run()\{……\}}
+\DataTypeTok{void}\NormalTok{ Game::parseArguments(}\DataTypeTok{int}\NormalTok{ argc, }\DataTypeTok{char}\NormalTok{ *argv[])\{……\}}
+\DataTypeTok{void}\NormalTok{ Game::readAttributes()\{……\}}
+\end{Highlighting}
+\end{Shaded}
+
+上述函数均位于 \texttt{game.cpp}
+文件中，它们对游戏进行了初始化操作。包括构造函数、析构函数，以及启动游戏的函数，在启动游戏后还进行了参数的解析，向玩家提供展示帮助信息、设置中英文、修改游戏基本设置等功能；随后进行属性的读取，赋予玩家昵称、族群等基本属性。
+
+\hypertarget{ux79fbux52a8ux51fdux6570}{%
+\subsubsection{移动函数}\label{ux79fbux52a8ux51fdux6570}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{//game.cpp}
+\CommentTok{//pseudo code}
+
+\DataTypeTok{bool}\NormalTok{ Game::process()}
+\NormalTok{\{}
+    \ControlFlowTok{if}\NormalTok{ (can }\ControlFlowTok{continue}\NormalTok{ to move) then}
+        \ControlFlowTok{if}\NormalTok{ (input == }\CharTok{'q'}\NormalTok{) then}
+\NormalTok{            quit;}
+        \ControlFlowTok{if}\NormalTok{ (input == }\CharTok{'}\SpecialCharTok{\textbackslash{}n}\CharTok{'}\NormalTok{ || input == }\CharTok{'}\SpecialCharTok{\textbackslash{}r}\CharTok{'}\NormalTok{) then}
+\NormalTok{            stop, lose val }\KeywordTok{and}\NormalTok{ go next;}
+\NormalTok{        backup current coordinates;}
+        \ControlFlowTok{if}\NormalTok{ (illegal move) then}
+\NormalTok{            go next;}
+        \ControlFlowTok{if}\NormalTok{ (can move diagonally) then}
+\NormalTok{            put terminal into halfdelay mode;}
+            \ControlFlowTok{if}\NormalTok{ (input == }\CharTok{'q'}\NormalTok{) then}
+\NormalTok{                quit;}
+            \ControlFlowTok{switch}\NormalTok{ terminal into normal mode;}
+            \ControlFlowTok{if}\NormalTok{ (illegal move) then}
+\NormalTok{                rollback }\KeywordTok{and}\NormalTok{ go next;}
+        \ControlFlowTok{if}\NormalTok{ (trigger event) then}
+\NormalTok{            generate step, lose val }\KeywordTok{and}\NormalTok{ go next;}
+        \ControlFlowTok{if}\NormalTok{ (step <- step - }\DecValTok{1} \KeywordTok{and}\NormalTok{ step == }\DecValTok{0}\NormalTok{) then}
+\NormalTok{            lose val;}
+    \ControlFlowTok{else}\NormalTok{ then}
+        \ControlFlowTok{do}\NormalTok{ action}
+        \ControlFlowTok{if}\NormalTok{ (quit action) then}
+\NormalTok{            quit;}
+\NormalTok{        generate step;}
+\NormalTok{    go next;}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+在 \texttt{game.cpp} 中， \texttt{process()}
+函数主要负责处理猫的移动。判断当前状态是否可以继续移动，如果可以则从键盘读入输入，然后执行移动命令（影族斜着走的移动方式通过短时间内同时按下两个方向键完成）。若没有剩余步数，则扣除一定的属性值，玩家可以选择六种行动中的一种（见下文），并生成新一轮的移动步数。
+
+\hypertarget{ux884cux52a8ux51fdux6570}{%
+\subsubsection{行动函数}\label{ux884cux52a8ux51fdux6570}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{//game.cpp}
+\CommentTok{//pseudo code}
+
+\DataTypeTok{bool}\NormalTok{ Game::doAction()}
+\NormalTok{\{}
+\NormalTok{    print the buttons of action;}
+\NormalTok{    choice <- }\DecValTok{0}\NormalTok{;}
+    \ControlFlowTok{for}\NormalTok{ (;;) }\ControlFlowTok{do}
+        \ControlFlowTok{for}\NormalTok{ (i <- }\DecValTok{0}\NormalTok{ to }\DecValTok{2}\NormalTok{) }\ControlFlowTok{do}
+            \ControlFlowTok{for}\NormalTok{ (j <- }\DecValTok{0}\NormalTok{ to }\DecValTok{3}\NormalTok{) }\ControlFlowTok{do}
+                \ControlFlowTok{if}\NormalTok{ (i * }\DecValTok{3}\NormalTok{ + j == choice) then}
+\NormalTok{                    turn on the A_REVERSE attributes;}
+\NormalTok{                print the selected button in reverse color;}
+\NormalTok{                turn off the A_REVERSE attributes;}
+        \ControlFlowTok{if}\NormalTok{ (input == }\CharTok{'q'}\NormalTok{) then}
+\NormalTok{            quit;}
+        \ControlFlowTok{if}\NormalTok{ (input == }\CharTok{'}\SpecialCharTok{\textbackslash{}n}\CharTok{'}\NormalTok{ || input == }\CharTok{'}\SpecialCharTok{\textbackslash{}r}\CharTok{'}\NormalTok{) then}
+            \ControlFlowTok{break}\NormalTok{ from the loop;}
+        \ControlFlowTok{if}\NormalTok{ (input == KEY_UP/KEY_DOWN/KEY_LEFT/KEY_RIGHT) then}
+\NormalTok{            move up/down/left/right the choice;}
+\NormalTok{        print the blank;}
+\NormalTok{        refresh the screen;}
+    \ControlFlowTok{switch}\NormalTok{ (choice)}
+        \ControlFlowTok{case} \DecValTok{0}\NormalTok{/}\DecValTok{1}\NormalTok{/}\DecValTok{2}\NormalTok{/}\DecValTok{3}\NormalTok{/}\DecValTok{4}\NormalTok{: go battle/check scent/hunt/go explore/rest;}
+        \ControlFlowTok{case} \DecValTok{5}\NormalTok{:}
+        \ControlFlowTok{if}\NormalTok{ (no water) then}
+\NormalTok{            MsgBox print }\StringTok{"No water here"}\NormalTok{;}
+        \ControlFlowTok{else}\NormalTok{ then}
+\NormalTok{            go drink;}
+\NormalTok{    go next;}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+在 \texttt{game.cpp} 中，\texttt{doAction()}
+函数主要负责对猫的行动进行管理。在控制台的底部，我们会打印出战斗、检查气味、捕猎、探索、休息、喝水六个按钮。玩家可以在六个按钮中选择一个进行行动，而我们的
+\texttt{doAction()}
+函数则会给出响应的控制。同时，和地图移动一样，我们对当前选择的按钮也进行了反色处理，使得玩家可以清楚看出自己目前位于哪个按钮上。而事实上，这些具体的调用都是由其他类完成的，如战斗是由
+\texttt{Board} 类调用 \texttt{Enemy::trigger}
+来完成，而检查气味和探索等则完全是地图操作。
+
+\hypertarget{ux6e32ux67d3ux72b6ux6001ux51fdux6570}{%
+\subsubsection{渲染状态函数}\label{ux6e32ux67d3ux72b6ux6001ux51fdux6570}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{//game.cpp}
+\CommentTok{//pseudo code}
+
+\DataTypeTok{void}\NormalTok{ Game::renderStatus()}
+\NormalTok{\{}
+    \ControlFlowTok{if}\NormalTok{ (fallback) then}
+\NormalTok{        print the title of all status;}
+\NormalTok{        print the frame of all status;}
+    \ControlFlowTok{switch}\NormalTok{ (clan of cat)}
+        \ControlFlowTok{case}\NormalTok{ thunder/wind/river/shadow: print }\StringTok{"ThundrClan"}\NormalTok{/}\StringTok{"WindClan"}\NormalTok{/}\StringTok{"RiverClan"}\NormalTok{/}\StringTok{"ShadowClan"}\NormalTok{;}
+        \ControlFlowTok{default}\NormalTok{: print }\StringTok{"Unknown"}\NormalTok{;}
+\NormalTok{    print the contents of other status;}
+\NormalTok{    print the frame of all status;}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+在 \texttt{game.cpp} 中，\texttt{renderStatus()}
+函数主要负责渲染属性栏底下的信息框，即将猫的族群、学徒名、地图编号（原游戏没有）、剩余步数、已收集星数等信息展示出来。
+
+\hypertarget{ux8fd0ux884cux6d4bux8bd5}{%
+\subsection{运行测试}\label{ux8fd0ux884cux6d4bux8bd5}}
+
+在完成了代码部分的撰写后，我们将游戏正式运行，在运行时，我们的程序会弹出窗口如下：
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/gamestart.png}
+\caption{启动游戏}
+\end{figure}
+
+随后，我们选择族群并键入名字，游戏会自动随机生成玩家属性和地图，便可开始游戏：
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/getname_clan.png}
+\caption{输入名字和族群}
+\end{figure}
+
+游戏内战斗相关界面如下，战斗是回合制：
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/battle.png}
+\caption{战斗界面}
+\end{figure}
+
+在战斗中，如果我们选择逃跑，则会出现如下情况并扣除相应属性：
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/flee.png}
+\caption{逃跑提示}
+\end{figure}
+
+在游戏中，如果我们进行休息操作，则可能获得一定的生命值：
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/rest.png}
+\caption{休息操作}
+\end{figure}
+
+在游戏中，如果我们进行捕猎操作，则会出现如下情况。如果随机出来的数字比需要的大，则捕猎成功并获得属性，否则不成功：
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/hunt.png}
+\caption{捕猎操作}
+\end{figure}
+
+在游戏中，如果我们进行探索地图操作，则可能能探索得知一个未知格子的内容：
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/explore.png}
+\caption{探索操作}
+\end{figure}
+
+在游戏中，如果我们在有水的地方进行喝水操作，则会获得渴饮值：
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/drink.png}
+\caption{喝水操作}
+\end{figure}
+
+在游戏中，如果我们选择检查气味，则会标记出图上所有可以闻到气味的物品：
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/check.png}
+\caption{检查气味操作}
+\end{figure}
+
+在游戏中，假如某项属性值降为0或更低，则会弹出如下信息框，随后游戏结束：
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/gameover.png}
+\caption{游戏结束界面}
+\end{figure}
+
+在WSL中，选用中文作为语言，显示出的界面如下所示：
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/cnnew.png}
+\caption{WSL 中文界面}
+\end{figure}
+
+支持一些命令行选项，可以设置一些作弊选项，可通过 \texttt{-h}
+来查看帮助，也支持双语：
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/help.png}
+\caption{命令行选项帮助}
+\end{figure}
+
+在地图上移动过程中，可能会遇到各种随机物品或事件，包括猎物、伤害、药草、水等，有的可以探索，有的不能。下图为成功使用药草增加生命值：
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/benefit.png}
+\caption{随机物品}
+\end{figure}
+
+当找到四个必需品并到达月池时，玩家胜利，并获得武士名：
+
+\begin{figure}[H]
+\centering
+\includegraphicx{img/victory.png}
+\caption{游戏胜利}
+\end{figure}
+\end{document}
